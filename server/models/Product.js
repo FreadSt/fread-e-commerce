@@ -17,9 +17,7 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
-    category: {
-      type: String,
-    },
+    categories: { type: [String] }, // Массив категорий
     size: {
       type: Array,
     },

@@ -14,7 +14,7 @@ const Product = ({ image, id }) => {
         setOverlayIsShown(false);
       }}
     >
-      <img src={image} alt='' className='w-full h-full object-cover' />
+      <img src={image} alt='' className='w-full h-[300px] object-cover' />
       {overlayIsShown && (
         <Link
           to={`/products/${id}`}

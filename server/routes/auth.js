@@ -1,7 +1,8 @@
 const express = require('express');
 const { body } = require('express-validator');
-
+const authController = require('../controllers/auth');
 const { login, register } = require('../controllers/auth');
+const {verifyToken} = require("../middlewares/verifyToken");
 
 const router = express.Router();
 
@@ -28,5 +29,7 @@ router.post('/register', [
 
 // POST => /api/auth/login
 router.post('/login', login);
+
+router.post('/refresh', verifyToken, authController.refreshToken);
 
 module.exports = router;

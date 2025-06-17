@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className='p-8 grid gap-x-16 gap-y-4 md:grid-cols-3'>
       <div>
         <h1 className='font-bold text-3xl uppercase mb-4 tracking-wider'>
-          <a href=''>Hein.</a>
+          <a href=''>fread.</a>
         </h1>
         <p className='text-justify'>
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ratione
@@ -63,7 +63,7 @@ const Footer = () => {
           </li>
           <li>
             <MailOutline className='mr-4' />
-            <span>contact@hein.com</span>
+            <span>kholiawkodev@gmail.com</span>
           </li>
         </ul>
       </div>

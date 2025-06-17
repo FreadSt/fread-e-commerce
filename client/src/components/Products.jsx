@@ -9,17 +9,20 @@ const Products = ({ category, filter }) => {
 
   const getProducts = async () => {
     try {
-      const url = category ? `/products?category=${category}` : '/products'; //For the Home Page
+      const url = category ? `/products?category=${category}` : '/products';
+      console.log('Request URL:', url); // Логируем URL
       const response = await publicRequest.get(url);
-      setProducts(response.data);
+      console.log('Response data:', response.data); // Логируем данные
+      setProducts(response.data || []);
     } catch (error) {
-      console.log(error);
+      setProducts([]); // Устанавливаем пустой массив при ошибке
+      console.log('Error:', error);
     }
   };
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [category]);
 
   return (
     <section

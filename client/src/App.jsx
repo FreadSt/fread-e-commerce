@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
 import { useSelector } from 'react-redux';
 
 import Home from './pages/Home';
@@ -11,9 +11,14 @@ import Signup from './pages/Signup';
 import Login from './pages/Login';
 import {AdminPanel} from "./pages/AdminPanel.jsx";
 import {publicRequest} from "./request-methods.js";
+import store from "./store/index.js";
 
 const App = () => {
-  const user = useSelector((store) => store.auth.currentUser);
+  const ProtectedAdminPanel = () => {
+    const user = useSelector((store) => store.auth.currentUser);
+    console.log('Current user in ProtectedAdminPanel:', user); // Для отладки
+    return user && user.isAdmin ? <AdminPanel /> : <Navigate to="/" />;
+  };
     return (
     <Router>
       <Routes>
@@ -22,10 +27,10 @@ const App = () => {
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
         <Route path='/categories/:category' element={<ShoppingCategories/>}/>
-        <Route path='/products/:id' elment={<SingleProduct/>}/>
+        <Route path='/products/:id' element={<SingleProduct/>}/>
         <Route path='/cart' element={<ShoppingCart/>}/>
         <Route path='/orders' element={<Orders/>}/>
-        <Route path={'/adminpanel'} element={<AdminPanel/>}/>
+        <Route path='/adminpanel' element={<ProtectedAdminPanel />} />
       </Routes>
         {/*<Route path='/categories/:category'>*/}
         {/*  <ShoppingCategories />*/}
