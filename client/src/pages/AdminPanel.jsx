@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { publicRequest } from '../request-methods';
+import { userRequest } from '../request-methods';
 import Navbar from '../layout/Navbar';
 import Announcement from '../layout/Announcement';
 import Footer from '../layout/Footer';
@@ -10,8 +10,8 @@ export const AdminPanel = () => {
   const user = useSelector((store) => store.auth.currentUser);
   const [product, setProduct] = useState({
     title: '',
-    desc: '',
-    img: '',
+    description: '',
+    image: '',
     categories: [],
     size: [],
     color: [],
@@ -36,12 +36,12 @@ export const AdminPanel = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await publicRequest.post('/products/add', product);
+      const response = await userRequest.post('/products', product);
       setMessage('Product added successfully!');
       setProduct({
         title: '',
-        desc: '',
-        img: '',
+        description: '',
+        image: '',
         categories: [],
         size: [],
         color: [],
@@ -49,7 +49,7 @@ export const AdminPanel = () => {
         inStock: true,
       });
     } catch (error) {
-      setMessage('Error adding product: ' + error.message);
+      setMessage('Error adding product: ' + (error.response?.data?.message || error.message));
     }
   };
 
@@ -77,8 +77,8 @@ export const AdminPanel = () => {
             <label className='block mb-2'>Description</label>
             <input
               type='text'
-              name='desc'
-              value={product.desc}
+              name='description'
+              value={product.description}
               onChange={handleInputChange}
               className='w-full p-2 border'
               required
@@ -88,8 +88,8 @@ export const AdminPanel = () => {
             <label className='block mb-2'>Image URL</label>
             <input
               type='text'
-              name='img'
-              value={product.img}
+              name='image'
+              value={product.image}
               onChange={handleInputChange}
               className='w-full p-2 border'
               required
@@ -131,7 +131,7 @@ export const AdminPanel = () => {
               type='number'
               name='price'
               value={product.price}
-              onChange={handleInputChange}
+              onChange={(e) => setProduct((prev) => ({ ...prev, price: Number(e.target.value) }))}
               className='w-full p-2 border'
               required
             />
@@ -151,7 +151,7 @@ export const AdminPanel = () => {
           >
             Add Product
           </button>
-          {message && <p className='mt-4'>{message}</p>}
+          {message && <p className='mt-4 text-red-700'>{message}</p>}
         </form>
       </section>
       <Footer />

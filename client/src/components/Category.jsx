@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Link } from 'react-router-dom';
 
-const Categorie = ({ name, image }) => {
+const Category = ({ name, image }) => {
   return (
     <Link to={`/categories/${name.toLowerCase()}`}>
       <figure className='relative'>
@@ -24,4 +24,4 @@ const Categorie = ({ name, image }) => {
   );
 };
 
-export default Categorie;
+export default Category;

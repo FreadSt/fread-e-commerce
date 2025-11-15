@@ -98,7 +98,7 @@ $ npm run build
 |   |   |-- components
 |   |   |   |-- Carousel.jsx
 |   |   |   |-- CartProduct.jsx
-|   |   |   |-- Categorie.jsx
+|   |   |   |-- Category.jsx
 |   |   |   |-- Categories.jsx
 |   |   |   |-- Filter.jsx
 |   |   |   |-- Newsletter.jsx

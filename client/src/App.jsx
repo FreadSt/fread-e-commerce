@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import {AdminPanel} from "./pages/AdminPanel.jsx";
 import {publicRequest} from "./request-methods.js";
 import store from "./store/index.js";
+import {TestSignUp} from "./pages/TestSignUp.jsx";
 
 const App = () => {
   const ProtectedAdminPanel = () => {
@@ -25,7 +26,7 @@ const App = () => {
         <Route path='/' element={<Home/>}/>
         <Route path='/categories/:category' element={<ShoppingCategories/>}/>
         <Route path='/login' element={<Login/>}/>
-        <Route path='/signup' element={<Signup/>}/>
+        <Route path='/signup' element={<TestSignUp/>}/>
         <Route path='/categories/:category' element={<ShoppingCategories/>}/>
         <Route path='/products/:id' element={<SingleProduct/>}/>
         <Route path='/cart' element={<ShoppingCart/>}/>
