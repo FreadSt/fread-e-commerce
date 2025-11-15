@@ -1,17 +1,28 @@
 const express = require('express');
-
 const { addProduct, updateProduct, deleteProduct, getProduct, getProducts } = require('../controllers/product');
 const { verifyTokenAndAdmin } = require('../middlewares/verifyToken');
+const multer = require('multer');
 
 const router = express.Router();
 
-// POST => /api/products - Добавление нового продукта (только для админов)
-router.post('/', verifyTokenAndAdmin, addProduct);
+// Настройка хранения файлов
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Папка для сохранения файлов (относительно server/)
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname); // Уникальное имя файла
+  },
+});
 
-// PATCH => /api/products/:id - Обновление продукта (только для админов)
+const upload = multer({ storage: storage });
+
+router.post('/add', verifyTokenAndAdmin, upload.single('image'), addProduct);
+
+// PATCH => /api/products/:id - Обновление продукта
 router.patch('/:id', verifyTokenAndAdmin, updateProduct);
 
-// DELETE => /api/products/:id - Удаление продукта (только для админов)
+// DELETE => /api/products/:id - Удаление продукта
 router.delete('/:id', verifyTokenAndAdmin, deleteProduct);
 
 // GET => /api/products/:id - Получение одного продукта

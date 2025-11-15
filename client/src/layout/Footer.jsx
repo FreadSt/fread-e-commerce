@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className='p-8 grid gap-x-16 gap-y-4 md:grid-cols-3'>
       <div>
-        <h1 className='font-bold text-3xl uppercase mb-4 tracking-wider'>
+        <h1 className='font-bold text-3xl mb-4 tracking-wider'>
           <a href=''>fread.</a>
         </h1>
         <p className='text-justify'>

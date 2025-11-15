@@ -15,7 +15,6 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-// Combine the reducers first
 const rootReducer = combineReducers({
   cart: cartSlice.reducer,
   auth: authSlice.reducer

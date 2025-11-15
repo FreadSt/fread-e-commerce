@@ -1,23 +1,56 @@
-import axios from 'axios';
-
 const BASE_URL = 'http://localhost:5000/api';
 
-export const publicRequest = axios.create({
-  baseURL: BASE_URL,
-});
+export const publicRequest = async (endpoint, options = {}) => {
+  try {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(options.headers || {}),
+      },
+    });
 
-export const userRequest = axios.create({
-  baseURL: BASE_URL,
-});
-
-// Интерцептор для добавления токена
-userRequest.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { message: `Request failed with status ${response.status}` };
+      }
+      throw new Error(errorData.message || 'Request failed');
     }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const userRequest = async (endpoint, options = {}) => {
+  const token = localStorage.getItem('token');
+
+  try {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        ...(options.headers || {}),
+      },
+    });
+
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { message: `Request failed with status ${response.status}` };
+      }
+      throw new Error(errorData.message || 'Auth request failed');
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};

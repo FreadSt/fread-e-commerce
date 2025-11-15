@@ -13,13 +13,6 @@ const Login = () => {
     password: '',
   });
 
-  // Редирект при успешном логине
-  useEffect(() => {
-    if (auth.currentUser && !auth.isFetching && !auth.error) {
-      navigate('/');
-    }
-  }, [auth.currentUser, auth.isFetching, auth.error, navigate]);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -44,6 +37,7 @@ const Login = () => {
         username: '',
         password: '',
       });
+      navigate('/');
     } catch (error) {
       console.error('Login error:', error);
     }

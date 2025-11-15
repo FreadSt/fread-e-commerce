@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 
 const Product = ({ image, id }) => {
   const [overlayIsShown, setOverlayIsShown] = useState(false);
+
+  const imageUrl = `http://localhost:5000${image}`; // Добавляем базовый URL сервера
+
   return (
     <figure
       className='relative'
@@ -14,7 +17,7 @@ const Product = ({ image, id }) => {
         setOverlayIsShown(false);
       }}
     >
-      <img src={image} alt='' className='w-full h-[300px] object-cover' />
+      <img src={imageUrl} alt='' className='w-full h-[300px] object-cover' />
       {overlayIsShown && (
         <Link
           to={`/products/${id}`}

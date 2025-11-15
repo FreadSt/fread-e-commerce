@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import {AdminPanel} from "./pages/AdminPanel.jsx";
 import {publicRequest} from "./request-methods.js";
 import store from "./store/index.js";
+import {TestSignUp} from "./pages/TestSignUp.jsx";
 
 const App = () => {
   const ProtectedAdminPanel = () => {

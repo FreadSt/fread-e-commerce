@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 
 import { ArrowLeft, ArrowRight } from '@mui/icons-material';
 import { Link } from 'react-scroll';
+import img1 from "../assets/images/suit.jpg"
+import img2 from "../assets/images/suit2.jpg"
 
 const CAROUSEL_DATA = [
   {
-    url: 'https://images.unsplash.com/photo-1523380744952-b7e00e6e2ffa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80',
+    url: img1,
   },
   {
-    url: 'https://images.unsplash.com/photo-1550995694-3f5f4a7e1bd2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80',
+    url: img2,
   },
 ];
 const Carousel = () => {
@@ -37,7 +39,7 @@ const Carousel = () => {
       />
       <div className='absolute h-full w-full top-0 left-0 bg-black/30'></div>
       <div className='absolute h-full w-full top-0 left-0 flex flex-col justify-center items-center text-white uppercase px-4 text-center'>
-        <h1 className='text-4xl md:text-6xl font-bold mb-8'>summer sale</h1>
+        <h1 className='text-4xl md:text-6xl font-bold mb-8'>autumn sale</h1>
         <p className='tracking-wider mb-16 text-md md:text-xl'>
           don't compromise on style! get flat 30% off for new arrivals.
         </p>

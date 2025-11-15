@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "start-server": "node app.js",
+    "start": "nodemon index.js",
+    "start-server": "node index.js",
     "test": "node tests/test.js"
   },
   "keywords": [],
@@ -22,6 +22,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.1",
     "morgan": "^1.10.0",
+    "multer": "^2.0.1",
     "stripe": "^10.10.0"
   },
   "devDependencies": {

@@ -15,9 +15,11 @@ module.exports.verifyToken = (req, res, next) => {
   try {
     /* Returns the payload if the signature is valid.
     If not, it will throw the error. */
-    payload = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const jwtSecret = process.env.JWT_SECRET_KEY || 'your-secret-jwt-key-change-in-production';
+    payload = jwt.verify(token, jwtSecret);
   } catch (error) {
     res.status(500).json(error);
+    return;
   }
   req.user = payload;
   next();
