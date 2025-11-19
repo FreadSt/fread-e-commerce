@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { userRequest } from '../request-methods.ts';
@@ -7,8 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../layout/Navbar.tsx';
 import Announcement from '../layout/Announcement.tsx';
 import Footer from '../layout/Footer.tsx';
-import {RootState} from "../store";
+import {AppDispatch, RootState} from "../store";
 import {cardElementOptions} from "../helpers/cardInfo.ts";
+import {clearCart} from "../store/cart-slice.ts";
 
 interface PaymentIntentResponse{
   clientSecret: string;
@@ -29,6 +30,7 @@ interface CartState {
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51LbSFeDby8a9HLcBzbuGETbDJiWZkCbNQx3gSpAfRZIKSrvsKakFGjvkNPTvzuHNNXKDYojDjdk3XhLlTajrQmeZ00JSyq9AOO');
 
 const CheckoutForm: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -82,6 +84,7 @@ const CheckoutForm: React.FC = () => {
         setError(confirmError.message || 'Payment confirmation failed');
         setProcessing(false);
       } else if (paymentIntent?.status === 'succeeded') {
+        dispatch(clearCart());
         navigate('/orders', { state: { paymentIntent } });
       }
     } catch (err) {
