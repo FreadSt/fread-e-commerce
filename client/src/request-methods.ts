@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
-const BASE_URL = 'https://fread.onrender.com/api';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 interface ApiError {
   message?: string;
@@ -16,7 +16,6 @@ export const publicRequest = async <T>(
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
-
 
     if (options.headers) {
       const incomingHeaders = new Headers(options.headers as HeadersInit);

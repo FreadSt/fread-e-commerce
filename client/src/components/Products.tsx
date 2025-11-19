@@ -24,6 +24,8 @@ const Products: React.FC<ProductProps> = ({ category, filter }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [data, setData] = useState<Product[]>([]);
 
+  fetch('https://fread.onrender.com/api').then((res) => res.json()).then((data) => console.log(data))
+
   const getProducts = useCallback(async () => {
     try {
       const url = category 
@@ -32,7 +34,6 @@ const Products: React.FC<ProductProps> = ({ category, filter }) => {
       console.log('Request URL:', url);
       const response = await publicRequest<Product[]>(url);
       console.log('Response data:', response);
-      console.log(response[0].image, 'image')
       setData(response || []);
     } catch (error) {
       console.error('Error fetching products:', error);
