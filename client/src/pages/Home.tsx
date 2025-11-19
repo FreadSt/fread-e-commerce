@@ -7,6 +7,7 @@ import Products from '../components/Products.tsx';
 const Home: React.FC = () => {
   return (
     <>
+      <Products />
       <Carousel />
       <Categories />
       <Products />
