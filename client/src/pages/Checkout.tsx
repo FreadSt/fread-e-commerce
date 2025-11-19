@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { userRequest } from '../request-methods.ts';
@@ -7,8 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../layout/Navbar.tsx';
 import Announcement from '../layout/Announcement.tsx';
 import Footer from '../layout/Footer.tsx';
-import {RootState} from "../store";
+import {AppDispatch, RootState} from "../store";
 import {cardElementOptions} from "../helpers/cardInfo.ts";
+import {clearCart} from "../store/cart-slice.ts";
 
 interface PaymentIntentResponse{
   clientSecret: string;
@@ -29,6 +30,7 @@ interface CartState {
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51LbSFeDby8a9HLcBzbuGETbDJiWZkCbNQx3gSpAfRZIKSrvsKakFGjvkNPTvzuHNNXKDYojDjdk3XhLlTajrQmeZ00JSyq9AOO');
 
 const CheckoutForm: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -71,12 +73,18 @@ const CheckoutForm: React.FC = () => {
     setError(null);
 
     try {
-      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret);
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardElement)!,
+          },
+        });
 
       if (confirmError) {
         setError(confirmError.message || 'Payment confirmation failed');
         setProcessing(false);
       } else if (paymentIntent?.status === 'succeeded') {
+        dispatch(clearCart());
         navigate('/orders', { state: { paymentIntent } });
       }
     } catch (err) {
@@ -91,23 +99,18 @@ const CheckoutForm: React.FC = () => {
   if (!clientSecret) {
     return (
       <>
-        <Announcement />
-        <Navbar />
         <section className="px-8 py-12 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700 mx-auto mb-4"></div>
             <p className="text-lg">Initializing payment...</p>
           </div>
         </section>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <Announcement />
-      <Navbar />
       <section className="px-8 py-12 min-h-screen">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold mb-8 text-center uppercase">Checkout</h1>
@@ -184,7 +187,6 @@ const CheckoutForm: React.FC = () => {
           </div>
         </div>
       </section>
-      <Footer />
     </>
   );
 };

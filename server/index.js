@@ -48,7 +48,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
@@ -68,6 +67,11 @@ app.use((req, res) => {
     message: 'Error serving the request!',
   });
 });
+
+app.get("/", (req, res) => {
+  res.json({ status: "OK", message: "Backend is running" });
+});
+
 
 io.on('connection', (socket) => {
   console.log('New user connected:', socket.id);
