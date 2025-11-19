@@ -1,78 +1,85 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CartProduct {
-  _id: string
-  title: string
-  description: string
-  image: string
-  price: number
-  quantity: number
-  size: string
+  _id: string;
+  title: string;
+  price: number;
+  quantity: number;
+  size?: string;
 }
 
 interface CartState {
-  products: CartProduct[]
-  totalQuantity: number
-  totalPrice: number
+  products: CartProduct[];
+  totalQuantity: number;
+  totalPrice: number;
 }
 
-interface ProductBase {
-  _id: string;
-  title: string;
-  description: string;
-  image: string;
-  price: number;
-}
-
-interface AddProductPayload {
-  product: ProductBase
-  quantity: number
-  size: string
-}
-
-const initialState = {
+const initialState: CartState = {
   products: [],
   totalQuantity: 0,
-  totalPrice: 0
+  totalPrice: 0,
 };
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addProduct(state: CartState, action: PayloadAction<AddProductPayload>) {
-      const newProduct: CartProduct = {
-        _id: action.payload.product._id,
-        title: action.payload.product.title,
-        description: action.payload.product.description,
-        image: action.payload.product.image,
-        price: action.payload.product.price,
-        quantity: action.payload.quantity,
-        size: action.payload.size
-      };
-      let added = false;
+    addProduct(state, action: PayloadAction<{ product: any; size: string; quantity: number }>) {
+      const { product, size, quantity } = action.payload;
+      const existingProduct = state.products.find(
+        (p) => p._id === product._id && p.size === size
+      );
 
-      for (let oldProduct of state.products) {
-        // Check if the product already added before
-        if (oldProduct._id === newProduct._id) {
-          // If added before check if the same size
-          if (oldProduct.size === newProduct.size) {
-            // If the same size increase the quantity
-            oldProduct.quantity += newProduct.quantity;
-            added = true;
-            break;
-          }
-        }
+      if (existingProduct) {
+        existingProduct.quantity += quantity;
+      } else {
+        state.products.push({
+          _id: product._id,
+          title: product.title,
+          price: product.price,
+          quantity,
+          size,
+        });
       }
-      // If not added before or not the same size push it as a new product 
-      if (!added) {
-        state.products.push(newProduct);
-      }
-      state.totalQuantity += newProduct.quantity;
-      state.totalPrice += newProduct.price * newProduct.quantity;
+
+      state.totalQuantity = state.products.reduce((acc, p) => acc + p.quantity, 0);
+      state.totalPrice = state.products.reduce(
+        (acc, p) => acc + p.price * p.quantity,
+        0
+      );
     },
-  }
+
+    removeProduct(state, action: PayloadAction<string>) {
+      state.products = state.products.filter((p) => p._id !== action.payload);
+      state.totalQuantity = state.products.reduce((acc, p) => acc + p.quantity, 0);
+      state.totalPrice = state.products.reduce(
+        (acc, p) => acc + p.price * p.quantity,
+        0
+      );
+    },
+
+    updateProductQuantity(
+      state,
+      action: PayloadAction<{ productId: string; quantity: number }>
+    ) {
+      const product = state.products.find((p) => p._id === action.payload.productId);
+      if (product) {
+        product.quantity = action.payload.quantity;
+      }
+      state.totalQuantity = state.products.reduce((acc, p) => acc + p.quantity, 0);
+      state.totalPrice = state.products.reduce(
+        (acc, p) => acc + p.price * p.quantity,
+        0
+      );
+    },
+
+    clearCart(state) {
+      state.products = [];
+      state.totalQuantity = 0;
+      state.totalPrice = 0;
+    },
+  },
 });
 
-export const { addProduct } = cartSlice.actions;
+export const { addProduct, removeProduct, updateProductQuantity, clearCart } = cartSlice.actions;
 export default cartSlice;
