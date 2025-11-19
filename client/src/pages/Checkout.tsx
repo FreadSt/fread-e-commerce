@@ -71,7 +71,12 @@ const CheckoutForm: React.FC = () => {
     setError(null);
 
     try {
-      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret);
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardElement)!,
+          },
+        });
 
       if (confirmError) {
         setError(confirmError.message || 'Payment confirmation failed');
@@ -91,23 +96,18 @@ const CheckoutForm: React.FC = () => {
   if (!clientSecret) {
     return (
       <>
-        <Announcement />
-        <Navbar />
         <section className="px-8 py-12 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700 mx-auto mb-4"></div>
             <p className="text-lg">Initializing payment...</p>
           </div>
         </section>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <Announcement />
-      <Navbar />
       <section className="px-8 py-12 min-h-screen">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold mb-8 text-center uppercase">Checkout</h1>
@@ -184,7 +184,6 @@ const CheckoutForm: React.FC = () => {
           </div>
         </div>
       </section>
-      <Footer />
     </>
   );
 };
