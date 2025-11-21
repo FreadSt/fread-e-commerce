@@ -3,7 +3,7 @@ import { userRequest } from '../request-methods.ts';
 import {Navigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {RootState} from "../store";
-import AdminChat from "../components/AdminChat.tsx";
+import {AdminChat} from "../components/AdminChat.tsx";
 
 interface Product {
   title: string;
@@ -106,7 +106,7 @@ export const AdminPanel:React.FC = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gray-100 p-8'>
+    <div className='min-h-[calc(100vh-64px)] bg-gray-100 lg:p-8 md:p-8 sm:p-4 xs:p-2'>
       <div className='max-w-full grid grid-cols-1 md:grid-cols-4 gap-6'>
         <section className='md:col-span-2 bg-white rounded-lg shadow p-6'>
           <h1 className='text-2xl font-semibold mb-4'>Admin Panel</h1>
@@ -233,7 +233,7 @@ export const AdminPanel:React.FC = () => {
         </section>
 
         <aside className='md:col-span-2'>
-          <AdminChat />
+          <AdminChat/>
         </aside>
       </div>
     </div>
