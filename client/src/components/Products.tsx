@@ -3,6 +3,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import { publicRequest } from '../request-methods.ts';
 
 import {Product as ProductComponent} from './Product.tsx';
+import Title from "./Title.tsx";
 
 interface Product {
   _id: string;
@@ -23,9 +24,11 @@ interface ProductProps {
 const Products: React.FC<ProductProps> = ({ category, filter }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [data, setData] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getProducts = useCallback(async () => {
     try {
+      setLoading(true);
       const url = category
         ? `/products?category=${encodeURIComponent(category)}`
         : '/products';
@@ -36,6 +39,8 @@ const Products: React.FC<ProductProps> = ({ category, filter }) => {
     } catch (error) {
       console.error('Error fetching products:', error);
       setData([]);
+    } finally {
+      setLoading(false);
     }
   }, [category]);
 
@@ -59,6 +64,10 @@ const Products: React.FC<ProductProps> = ({ category, filter }) => {
   useEffect(() => {
     getProducts();
   }, [getProducts]);
+
+  if (loading) {
+    return <Title>Loading...(Render service use "cold start")</Title>;
+  }
 
   return (
       <section
