@@ -42,12 +42,8 @@ const Chat: React.FC = () => {
   }, [messages]);
 
   useEffect(() => {
-    // ✅ Используй переменные из CHAT_CONFIG
     const socketUrl = CHAT_CONFIG.SOCKET_URL;
     const apiBase = CHAT_CONFIG.API_BASE;
-
-    console.log('🔌 Connecting socket to:', socketUrl);
-    console.log('📡 API base:', apiBase);
 
     const newSocket = io(socketUrl, {
       reconnection: true,
@@ -59,7 +55,6 @@ const Chat: React.FC = () => {
     });
 
     newSocket.on('connect', () => {
-      console.log('✅ Socket connected');
       setIsConnected(true);
       newSocket.emit('joinRoom', chatRoom);
     });
@@ -75,7 +70,6 @@ const Chat: React.FC = () => {
 
     setSocket(newSocket);
 
-    // Загрузи сообщения
     if (currentUser?._id) {
       fetch(`${apiBase}/user/${currentUser._id}`)
         .then((res) => res.json())
