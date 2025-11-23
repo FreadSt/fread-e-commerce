@@ -4,7 +4,7 @@ import io, { Socket } from 'socket.io-client';
 import { Close, Message, Send } from '@mui/icons-material';
 import { IconButton, Badge, Fab } from '@mui/material';
 import { RootState } from '../store';
-import {CHAT_CONFIG} from "../constants/chat/chat.ts";
+import { CHAT_CONFIG } from "../constants/chat/chat.ts";
 
 interface ChatMessage {
   _id: string;
@@ -25,6 +25,7 @@ const Chat: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [unreadCount, setUnreadCount] = useState<number>(0);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   if (currentUser?.isAdmin) {
@@ -41,22 +42,52 @@ const Chat: React.FC = () => {
   }, [messages]);
 
   useEffect(() => {
-    const socketUrl = import.meta.env.VITE_SOCKET_URL;
+    // ✅ Используй переменные из CHAT_CONFIG
+    const socketUrl = CHAT_CONFIG.SOCKET_URL;
+    const apiBase = CHAT_CONFIG.API_BASE;
+
+    console.log('🔌 Connecting socket to:', socketUrl);
+    console.log('📡 API base:', apiBase);
 
     const newSocket = io(socketUrl, {
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5,
+      transports: ['websocket', 'polling'],
       withCredentials: true,
+    });
+
+    newSocket.on('connect', () => {
+      console.log('✅ Socket connected');
+      setIsConnected(true);
+      newSocket.emit('joinRoom', chatRoom);
+    });
+
+    newSocket.on('disconnect', () => {
+      console.log('❌ Socket disconnected');
+      setIsConnected(false);
+    });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('⚠️ Socket error:', error);
     });
 
     setSocket(newSocket);
 
-    newSocket.emit('joinRoom', chatRoom);
-
-    fetch(`${CHAT_CONFIG.API_BASE}/user/${currentUser?._id}`)
-      .then((res) => res.json())
-      .then((data) => setMessages(Array.isArray(data) ? data : []))
-      .catch((err) => console.error('Error fetching messages:', err));
+    // Загрузи сообщения
+    if (currentUser?._id) {
+      fetch(`${apiBase}/user/${currentUser._id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log('📨 Messages loaded:', data);
+          setMessages(Array.isArray(data) ? data : []);
+        })
+        .catch((err) => console.error('Error fetching messages:', err));
+    }
 
     newSocket.on('receiveMessage', (message: ChatMessage) => {
+      console.log('💬 Received:', message);
       if (message.userId === currentUser?._id) {
         setMessages((prev) => [...prev, message]);
       }
@@ -79,7 +110,6 @@ const Chat: React.FC = () => {
               body: JSON.stringify({ senderRole: 'user' }),
             }
           );
-
 
           setMessages((prev) =>
             prev.map((msg) =>
@@ -111,6 +141,7 @@ const Chat: React.FC = () => {
       userId: currentUser._id,
     };
 
+    console.log('📤 Sending:', messageData);
     socket.emit('sendMessage', messageData);
     setInput('');
   };
@@ -163,7 +194,9 @@ const Chat: React.FC = () => {
               <Message />
               <div>
                 <h2 className='text-lg font-semibold'>Support Chat</h2>
-                <p className='text-xs opacity-90'>Chat with our support team</p>
+                <p className='text-xs opacity-90'>
+                  {isConnected ? '🟢 Online' : '🔴 Connecting...'}
+                </p>
               </div>
             </div>
             <IconButton
@@ -234,10 +267,11 @@ const Chat: React.FC = () => {
               onKeyPress={handleKeyPress}
               placeholder='Write a message...'
               className='flex-1 p-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-teal-500'
+              disabled={!isConnected}
             />
             <IconButton
               onClick={handleSend}
-              disabled={!input.trim()}
+              disabled={!input.trim() || !isConnected}
               sx={{
                 color: '#0d9488',
                 '&:hover': {

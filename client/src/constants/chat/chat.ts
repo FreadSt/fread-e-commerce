@@ -1,9 +1,9 @@
+// ✅ Автоматически подхватит правильный URL из .env
 export const CHAT_CONFIG = {
   ADMIN_ROOM: 'admin-support',
   SOCKET_URL: import.meta.env.VITE_SOCKET_URL,
   API_BASE: `${import.meta.env.VITE_API_URL}/chat`,
 };
-
 
 export const CHAT_MESSAGES = {
   NO_CONVERSATIONS: 'No active conversations yet',

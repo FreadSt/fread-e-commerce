@@ -21,9 +21,17 @@ const Message = require('./models/Message');
 const app = express();
 const server = http.createServer(app);
 
+const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
+const socketOrigin = process.env.SOCKET_ORIGIN || 'http://localhost:5173';
+const nodeEnv = process.env.NODE_ENV || 'development';
+
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
+  'https://fread-e-commerce.vercel.app',
+  socketOrigin,
+  corsOrigin,
+  nodeEnv,
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
