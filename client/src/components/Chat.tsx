@@ -71,7 +71,7 @@ const Chat: React.FC = () => {
       if (currentUser && isOpen) {
         try {
           await fetch(
-            `${import.meta.env.VITE_API_URL}/chat/mark-as-read/${currentUser._id}`,
+            `${import.meta.env.VITE_API_URL}/chat/mark-as-read/${currentUser?._id}`,
             {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
